@@ -310,10 +310,13 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
 			var year = years[years.length - 1];
 			var dataLayers = {};
 
-			function initMap(){
+			function initMap() {
+				var isIE8 = (navigator.userAgent.indexOf('MSIE 8') > 0);
+
 				map = new L.Map('map', {
 					center: new L.LatLng(51.5, 7.6),
-					zoom: 8
+					zoom: 8,
+					closePopupOnClick: !isIE8
 				});
 				map.attributionControl.setPrefix('');
 				map.attributionControl.addAttribution('Anwendung: <a target="_blank" href="http://www.sendung.de/">Marian Steinbach</a> & <a href="http://www.opendatacity.de">odc</a> für <a target="_blank" href="http://www.derwesten.de/">WAZ</a>, Geodaten &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende');
@@ -326,6 +329,20 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
 				map.on('zoomend', function(){
 					refreshMap();
 				});
+
+				/* Workaround for IE8, because IE8 is a piece of shit! */
+				if (isIE8) {
+					var popupClicked = false;
+					$('#map').on('click', function () {
+						if (!popupClicked) map.closePopup();
+					})
+					$('#map').on('click', '.leaflet-popup', function (e) {
+						popupClicked = true;
+						setTimeout(function () {
+							popupClicked = false;
+						}, 1);
+					});
+				}
 			}
 
 			function formatFloat(n) {
@@ -541,7 +558,7 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
 				popup.find('.content').hide();
 				popup.find('.content.' + active).show();
 			}
-			$('body').on('click', '.tab.inactive a', function(evt){
+			$('body').on('click', '.tab.inactive a', function(evt) {
 				evt.preventDefault();
 				//console.log(evt.target);
 				var tabbar = $(evt.target).parents('.tabbar');
