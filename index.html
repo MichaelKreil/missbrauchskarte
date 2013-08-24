@@ -224,6 +224,7 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
 
         </script>
         <script src="js/leaflet.js"></script>
+        <script src="daten/data.js"></script>
         <script>
         /**
          * Hier ist unsere Webapp
@@ -231,8 +232,6 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
          * (c) 2013 Marian Steinbach <http://www.sendung.de/>
          */
         (function($, L){
-
-            var data = {};
 
             var relativeScore = true;
             var map;
@@ -415,38 +414,6 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
                 });
             }
 
-            /**
-             * Load data and, when finished, render map and 
-             * turn off load indicator
-             */
-            function loadData() {
-                $.each(years, function(i, year){
-                    $('#loading .inner').text("Daten für " + year + " werden geladen...");
-                    $.ajaxq ("jsonqueue", {
-                        url: "daten/" + year + ".json",
-                        cache: true,
-                        success: function(jsondata) {
-                            data[year] = jsondata;
-                            if (loadingComplete()) {
-                                renderMapData();
-                            }
-                        }
-                    });
-                });
-            }
-
-            /**
-             * Checks if all data is loaded
-             */
-            function loadingComplete() {
-                for (y in years) {
-                    if (typeof data[years[y]] === "undefined") {
-                        return false;
-                    }
-                }
-                return true
-            }
-
             function adaptToSize() {
                 var h = $(window).height();
                 var w = $(window).width();
@@ -514,7 +481,7 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
             });
 
             initMap();
-            loadData();
+            renderMapData();
 
         })(jQuery, L);
 
