@@ -438,20 +438,20 @@ jQuery.ajaxq=function(e,t){if(typeof document.ajaxq=="undefined")document.ajaxq=
 							title: item.name,
 							fillColor: 'red',
 							fillOpacity: defaultFillOpacity,
-							weight: 2,
+							weight: 0,
 							color: '#cc0000',
-							stroke: false
+							stroke: true
 						});
 						mapCircles[y][key].bindPopup(popupHtml(item, y));
 						mapCircles[y][key].on('mouseover', function(e){
 							this.setStyle({
 								fillOpacity: 0.6,
-								stroke: true
+								weight: 2
 							});
 						});
 						mapCircles[y][key].on('mouseout', function(e){
 							this.setStyle({
-								stroke: false,
+								weight: 0,
 								fillOpacity: defaultFillOpacity
 							});
 						});
